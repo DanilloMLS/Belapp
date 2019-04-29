@@ -399,9 +399,10 @@ public class InicialActivity extends AppCompatActivity
             {
                 addresses = gcd.getFromLocation(loc.getLatitude(), loc
                         .getLongitude(), 1);
-                if (addresses.size() > 0)
+                if (addresses.size() > 0) {
                     System.out.println(addresses.get(0).getLocality());
-                cityName=addresses.get(0).getLocality();
+                    cityName=addresses.get(0).getLocality();
+                }
             }
             catch (IOException e)
             {
