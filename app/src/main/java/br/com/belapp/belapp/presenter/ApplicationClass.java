@@ -2,6 +2,8 @@ package br.com.belapp.belapp.presenter;
 
 import android.app.Application;
 
+import com.google.firebase.FirebaseApp;
+
 public class ApplicationClass extends Application {
 
 
@@ -15,6 +17,7 @@ public class ApplicationClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseApp.initializeApp(this);
 
         /*estabelecimento1 = new Estabelecimento("-LS54ly9L9y6RsIuOGid", "Salão Beauty", "Descrição do salão Beauty", -8.899168, -36.490116, "Dr. Tomé Cavalcante", "186", "Santo Antônio", "Garanhuns", "","55293-440");
         estabelecimento2 = new Estabelecimento("-LS5qQlPYFyFBCY4E0Uz", "Salão Great", "Descrição do salão Great", -8.896258, -36.492095, "R. da Esperança", "215", "Santo Antônio", "Garanhuns", "","55293-160");
