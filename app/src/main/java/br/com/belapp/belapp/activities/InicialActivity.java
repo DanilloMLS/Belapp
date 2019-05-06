@@ -81,7 +81,6 @@ public class InicialActivity extends AppCompatActivity
     private static final String TAG = "Debug";
     private Boolean flag = false;
 
-    private FirebaseAuth logado = FirebaseAuth.getInstance();
     private TextView AbriActivityLogin;
     ImageButton btnBarba, btnCabelo, btnDepilacao, btnOlho, btnSobrancelha, btnUnha;
 
@@ -299,7 +298,7 @@ public class InicialActivity extends AppCompatActivity
     }
 
     public void isLogado() {
-        if (logado.getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             mProgressDialog.dismiss();
             abrirTelaPrincipal();
 
