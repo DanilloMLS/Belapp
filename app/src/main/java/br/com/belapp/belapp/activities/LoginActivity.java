@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
                     cliente = new Cliente();
-                    cliente.setmEmail(edtEmail.getText().toString());
-                    cliente.setmSenha(edtSenha.getText().toString());
+                    cliente.setMEmail(edtEmail.getText().toString());
+                    cliente.setMSenha(edtSenha.getText().toString());
                     validarLogin();
 
 
@@ -72,9 +72,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void validarLogin() {
 
-        autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        autenticacao = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao();
 
-        autenticacao.signInWithEmailAndPassword(cliente.getmEmail(), cliente.getmSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        autenticacao.signInWithEmailAndPassword(cliente.getMEmail(), cliente.getMSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

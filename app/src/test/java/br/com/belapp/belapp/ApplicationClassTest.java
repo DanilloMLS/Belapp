@@ -2,10 +2,7 @@ package br.com.belapp.belapp;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-
-import br.com.belapp.belapp.presenter.ApplicationClass;
-
+import static br.com.belapp.belapp.utils.CalculaDistanciaKt.calculaDistancia;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -18,8 +15,7 @@ public class ApplicationClassTest {
         double lat2 = -9;
         double lon2 = -37;
 
-        ApplicationClass applicationClass = new ApplicationClass();
-        double resultado = applicationClass.calculaDistancia(lat1,lon1,lat2,lon2);
+        double resultado = calculaDistancia(lat1,lon1,lat2,lon2);
 
         assertThat(resultado, is(156.39104297508643));
     }

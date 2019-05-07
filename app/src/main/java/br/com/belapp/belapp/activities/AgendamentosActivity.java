@@ -58,7 +58,7 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
 
 
         mFiltroMeses = findViewById(R.id.spinner_meses_toolBar);
-        List<String> listaStringsMeses = MesesEnum.getListaMeses();
+        List<String> listaStringsMeses = MesesEnum.Companion.getListaMeses();
 
         ArrayAdapter<String> adapterMeses = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, listaStringsMeses);
@@ -76,7 +76,7 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
         });
 
         mFiltroStatus = findViewById(R.id.spinner_status_agendamento_toolBar);
-        List<String> listaStringsStatus = StatusAgendamentoEnum.getListaStatus();
+        List<String> listaStringsStatus = StatusAgendamentoEnum.Companion.getListaStatus();
 
         ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, listaStringsStatus);
@@ -137,10 +137,10 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
         if(mAgendamentos.size() == 0) {
             Agendamento agendamento = new Agendamento();
             Servico servico = new Servico();
-            servico.setmNome(getString(R.string.error_nao_ha_resultados));
-            agendamento.setmServico(servico);
-            agendamento.setmId("");
-            agendamento.setmData("00/00/0000");
+            servico.setMNome(getString(R.string.error_nao_ha_resultados));
+            agendamento.setMServico(servico);
+            agendamento.setMId("");
+            agendamento.setMData("00/00/0000");
             mAgendamentos.add(agendamento);
         }
 
@@ -152,9 +152,9 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
     private ArrayList<Agendamento> filtrarPorMes(ArrayList<Agendamento> agendamentos) {
         ArrayList<Agendamento> listaFiltrada = new ArrayList<>();
         for (Agendamento agendamento: agendamentos){
-            if(DateUtils.checarSeDataPertenceAoMes(
-                    agendamento.getmData(),
-                    MesesEnum.getValor(mFiltroMeses.getSelectedItem().toString()))){
+            if(DateUtils.INSTANCE.checarSeDataPertenceAoMes(
+                    agendamento.getMData(),
+                    MesesEnum.Companion.getValor(mFiltroMeses.getSelectedItem().toString()))){
                 listaFiltrada.add(agendamento);
             }
         }
@@ -165,8 +165,8 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
     private ArrayList<Agendamento> filtrarPorStatusAgendado(ArrayList<Agendamento> agendamentos){
         ArrayList<Agendamento> listAuxiliar = new ArrayList<>();
         for(Agendamento agendamento: agendamentos){
-            if(DateUtils.isDataFutura(agendamento.getmData())
-                    || DateUtils.isDataPresente(agendamento.getmData())){
+            if(DateUtils.INSTANCE.isDataFutura(agendamento.getMData())
+                    || DateUtils.INSTANCE.isDataPresente(agendamento.getMData())){
                 listAuxiliar.add(agendamento);
             }
         }
@@ -176,8 +176,8 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
     private ArrayList<Agendamento> filtrarPorStatusConcluido(ArrayList<Agendamento> agendamentos){
         ArrayList<Agendamento> listAuxiliar = new ArrayList<>();
         for(Agendamento agendamento: agendamentos){
-            if(!DateUtils.isDataFutura(agendamento.getmData())
-                    && !DateUtils.isDataPresente(agendamento.getmData())){
+            if(!DateUtils.INSTANCE.isDataFutura(agendamento.getMData())
+                    && !DateUtils.INSTANCE.isDataPresente(agendamento.getMData())){
                 listAuxiliar.add(agendamento);
             }
         }
@@ -205,7 +205,7 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
                 Agendamento agendamento = dataSnapshot.getValue(Agendamento.class);
 
 
-                if(!mAgendamentos.contains(agendamento) && agendamento.getmCliente().equals(idUser)){
+                if(!mAgendamentos.contains(agendamento) && agendamento.getMCliente().equals(idUser)){
                     mAgendamentos.add(agendamento);
                     ordenarResultados();
                     buscarFiltrarAgendamentos();
@@ -260,10 +260,10 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
     }
 
     private void ordenarResultados(){
-        Collections.sort(mAgendamentos, (o1, o2) -> DateUtils
+        Collections.sort(mAgendamentos, (o1, o2) -> DateUtils.INSTANCE
                 .getDiferencaEntreDuasDatasEspecificas(
-                        o2.getmData(),
-                        o1.getmData()));
+                        o2.getMData(),
+                        o1.getMData()));
 
     }
 }

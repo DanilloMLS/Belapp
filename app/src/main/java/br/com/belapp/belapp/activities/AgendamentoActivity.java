@@ -48,20 +48,20 @@ public class AgendamentoActivity extends AppCompatActivity {
         TextView tvProfissional = findViewById(R.id.tvProfissional);
         TextView tvStatus = findViewById(R.id.tvStatus);
 
-        tvData.setText(String.format(Locale.getDefault(), "Data: %s", agendamento.getmData()));
-        tvEstabelecimento.setText(agendamento.getmEstabelecimento().getmNome());
-        tvHora.setText(String.format(Locale.getDefault(), "Horário: %s", agendamento.getmHora()));
+        tvData.setText(String.format(Locale.getDefault(), "Data: %s", agendamento.getMData()));
+        tvEstabelecimento.setText(agendamento.getMEstabelecimento().getMNome());
+        tvHora.setText(String.format(Locale.getDefault(), "Horário: %s", agendamento.getMHora()));
         tvLocal.setText(String.format(Locale.getDefault(), "%s, nº %s, %s, %s",
-                agendamento.getmEstabelecimento().getmRua(),
-                agendamento.getmEstabelecimento().getmNumero(),
-                agendamento.getmEstabelecimento().getmBairro(),
-                agendamento.getmEstabelecimento().getmCidade()));
+                agendamento.getMEstabelecimento().getMRua(),
+                agendamento.getMEstabelecimento().getMNumero(),
+                agendamento.getMEstabelecimento().getMBairro(),
+                agendamento.getMEstabelecimento().getMCidade()));
         tvServico.setText(String.format(Locale.getDefault(), "Serviço Agendado: %s\n Preço: R$%.2f",
-                agendamento.getmServico().getmNome(),
-                agendamento.getmServico().getmPreco()));
+                agendamento.getMServico().getMNome(),
+                agendamento.getMServico().getMPreco()));
         tvProfissional.setText(String.format(Locale.getDefault(), "Profissional: %s \n Domicílio? %s",
-                agendamento.getmProfissional().getNome(),
-                (agendamento.getmProfissional().getAtendDomic().equalsIgnoreCase("N")?
+                agendamento.getMProfissional().getNome(),
+                (agendamento.getMProfissional().getAtendDomic().equalsIgnoreCase("N")?
                         getString(R.string.app_nao):
                         getString(R.string.app_sim))));
         Button btnCancelar = findViewById(R.id.btnCancelarAgendamento);
@@ -77,8 +77,8 @@ public class AgendamentoActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        if(DateUtils.isDataPresente(agendamento.getmData())
-                || DateUtils.isDataFutura(agendamento.getmData())){
+        if(DateUtils.INSTANCE.isDataPresente(agendamento.getMData())
+                || DateUtils.INSTANCE.isDataFutura(agendamento.getMData())){
 
             tvStatus.setText(StatusAgendamentoEnum.AGENDADO.getStatus());
             tvStatus.setTextColor(Color.GREEN -5000);

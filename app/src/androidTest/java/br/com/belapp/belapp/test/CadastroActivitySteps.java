@@ -134,7 +134,7 @@ public class CadastroActivitySteps extends DefaultTest {
     }
     @Quando("^eu preencho todos os campos corretamente$")
     public void euNaoPreenchoOCampo() {
-        String email = StringUtils.gerarEmail();
+        String email = StringUtils.INSTANCE.gerarEmail();
         preencherCampoEditText(R.id.etNomeCadastro, "Maria Jose");
         preencherCampoEditText(R.id.etEmailCadastro, email);
         preencherCampoEditText(R.id.etConfirmacaoEmailCadastro,email);

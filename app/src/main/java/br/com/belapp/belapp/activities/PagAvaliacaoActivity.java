@@ -10,34 +10,27 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import br.com.belapp.belapp.R;
 import br.com.belapp.belapp.model.Avaliacao;
 import br.com.belapp.belapp.model.ConfiguracaoFireBase;
-import br.com.belapp.belapp.model.Servico;
 import br.com.belapp.belapp.presenter.AvaliacaoAdapter;
-import br.com.belapp.belapp.servicos.Permissao;
 
-import static android.widget.Toast.makeText;
+import static br.com.belapp.belapp.servicos.PermissaoKt.verificarPermissaoRestritivo;
 
 public class PagAvaliacaoActivity extends AppCompatActivity {
 
@@ -98,8 +91,8 @@ public class PagAvaliacaoActivity extends AppCompatActivity {
         ibAvaliacoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser usuario = ConfiguracaoFireBase.getFirebaseAutenticacao().getCurrentUser();
-                if (Permissao.verificarPermissaoRestritivo(PagAvaliacaoActivity.this)) {
+                FirebaseUser usuario = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao().getCurrentUser();
+                if (verificarPermissaoRestritivo(PagAvaliacaoActivity.this)) {
                     Intent intent = new Intent(PagAvaliacaoActivity.this,AvaliarActitivy.class);
                     intent.putExtra("nome",nome);
                     intent.putExtra("idEstabelecimento",salao);
@@ -133,7 +126,7 @@ public class PagAvaliacaoActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Avaliacao avaliacao = dataSnapshot.getValue(Avaliacao.class);
                 avaliacoes.add(avaliacao);
-                contar(avaliacao.getmNota());
+                contar(avaliacao.getMNota());
                 anotar();
                 myAdpter.notifyDataSetChanged();
                 //mProgressDialog.dismiss();

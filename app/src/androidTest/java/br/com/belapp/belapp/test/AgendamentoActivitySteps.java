@@ -79,7 +79,7 @@ public class AgendamentoActivitySteps extends DefaultTest{
     public void euInformoUmaDataValida() {
         if(getAtualActivity() instanceof AgendarServicoActivity){
             AgendarServicoActivity activityAgendamento = (AgendarServicoActivity) getAtualActivity();
-            activityAgendamento.setData(DateUtils.gerarDataValida(activityAgendamento.getDiasFuncionamento()));
+            activityAgendamento.setData(DateUtils.INSTANCE.gerarDataValida(activityAgendamento.getDiasFuncionamento()));
         }
     }
 
@@ -88,7 +88,7 @@ public class AgendamentoActivitySteps extends DefaultTest{
         if(getAtualActivity() instanceof AgendarServicoActivity){
             AgendarServicoActivity activityAgendamento = (AgendarServicoActivity) getAtualActivity();
             activityAgendamento.setData(
-                    DateUtils.gerarDataInvalida(activityAgendamento.getDiasFuncionamento()));
+                    DateUtils.INSTANCE.gerarDataInvalida(activityAgendamento.getDiasFuncionamento()));
         }
     }
 

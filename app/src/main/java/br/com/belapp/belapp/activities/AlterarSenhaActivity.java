@@ -120,7 +120,7 @@ public class AlterarSenhaActivity extends AppCompatActivity {
                 if(!TextUtils.equals(etNovaSenha.getText().toString(), etNovaSenhaConfirmacao.getText().toString())){
                     throw new ValidationException(getString(R.string.error_nova_senha_confirmacao_diferem));
                 }
-                if(StringUtils.isVerificarSenhaInvalida(etNovaSenha.getText().toString())){
+                if(StringUtils.INSTANCE.isVerificarSenhaInvalida(etNovaSenha.getText().toString())){
                     throw new ValidationException(getString(R.string.error_nova_senha_deve_ter_6_ou_mais_caracteres));
                 }
             }

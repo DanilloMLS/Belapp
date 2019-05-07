@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import br.com.belapp.belapp.R;
@@ -30,17 +28,13 @@ import br.com.belapp.belapp.model.ConfiguracaoFireBase;
 
 public class AvaliarActitivy extends AppCompatActivity {
 
-    private TextView tvNome;
     private TextView tvNota;
     private EditText tvComentario;
     private ImageView ivEstrela1,ivEstrela2,ivEstrela3,ivEstrela4,ivEstrela5;
-    private Button btEnviar;
     private double mNota = 0;
     private String mIdSalao;
-    private String mNomeSalao;
     private String mIdCliente;
     private String mNomeCliente = "";
-    private ArrayList<Cliente> clientes;
 
 
     @Override
@@ -54,7 +48,7 @@ public class AvaliarActitivy extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         setSupportActionBar(toolbar);
 
-        tvNome = findViewById(R.id.tv_nome_avaliar);
+        TextView tvNome = findViewById(R.id.tv_nome_avaliar);
         tvNota = findViewById(R.id.tv_nota_avaliar);
         tvComentario = findViewById(R.id.et_comentario_avaliar);
         ivEstrela1 = findViewById(R.id.iv_estrela1);
@@ -62,16 +56,14 @@ public class AvaliarActitivy extends AppCompatActivity {
         ivEstrela3 = findViewById(R.id.iv_estrela3);
         ivEstrela4 = findViewById(R.id.iv_estrela4);
         ivEstrela5 = findViewById(R.id.iv_estrela5);
-        btEnviar = findViewById(R.id.bt_enviar_avaliar);
+        Button btEnviar = findViewById(R.id.bt_enviar_avaliar);
 
         mIdCliente = getIntent().getExtras().getString("idCliente");
         mIdSalao = getIntent().getExtras().getString("idEstabelecimento");
-        mNomeSalao = getIntent().getExtras().getString("nome");
+        String mNomeSalao = getIntent().getExtras().getString("nome");
 
         tvNome.setText(mNomeSalao);
 
-        //buscando cliente
-        clientes = new ArrayList<>();
         buscarNomeCliente(mIdCliente);
 
                 ivEstrela1.setOnClickListener(new View.OnClickListener() {
@@ -124,14 +116,14 @@ public class AvaliarActitivy extends AppCompatActivity {
             public void onClick(View view) {
                 if(mNota != 0) {
                     Avaliacao avaliar = new Avaliacao();
-                    avaliar.setmComentario(tvComentario.getText().toString());
-                    avaliar.setmControle(gerarControle());
-                    avaliar.setmData(pegarData());
-                    avaliar.setmFoto(buscarFoto());
-                    avaliar.setmNome(mNomeCliente);
-                    avaliar.setmNota(mNota);
+                    avaliar.setMComentario(tvComentario.getText().toString());
+                    avaliar.setMControle(gerarControle());
+                    avaliar.setMData(pegarData());
+                    avaliar.setMFoto(buscarFoto());
+                    avaliar.setMNome(mNomeCliente);
+                    avaliar.setMNota(mNota);
                     salvarAvaliacao(avaliar,mIdSalao,mIdCliente);
-                    //Log.d("CLIENTE", "comentario: "+avaliar.getmComentario()+" data: "+ avaliar.getmData()+ " nome: "+avaliar.getmNome()+ " controle: "+ avaliar.getmControle()+" nota: "+String.valueOf(avaliar.getmNota()));
+                    //Log.d("CLIENTE", "comentario: "+avaliar.getMComentario()+" data: "+ avaliar.getMData()+ " nome: "+avaliar.getMNome()+ " controle: "+ avaliar.getMControle()+" nota: "+String.valueOf(avaliar.getMNota()));
                     Toast.makeText(AvaliarActitivy.this,"Avaliação foi salva!",Toast.LENGTH_LONG).show();
                     finish();
                 } else {
@@ -214,8 +206,7 @@ public class AvaliarActitivy extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Cliente cliente1 = dataSnapshot.getValue(Cliente.class);
-                clientes.add(cliente1);
-                mNomeCliente = cliente1.getmNome();
+                mNomeCliente = cliente1.getMNome();
             }
 
             @Override
@@ -232,7 +223,7 @@ public class AvaliarActitivy extends AppCompatActivity {
     }
 
     private void salvarAvaliacao(Avaliacao avaliacao, String idSalao, String idCliente){
-        DatabaseReference databaseReference = ConfiguracaoFireBase.getFirebase();
+        DatabaseReference databaseReference = ConfiguracaoFireBase.INSTANCE.getFirebase();
         databaseReference.child("avaliacoes").child(idSalao).child(idCliente).setValue(avaliacao);
     }
 

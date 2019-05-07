@@ -103,9 +103,9 @@ public class PerfilActivity extends AppCompatActivity {
                 for (DataSnapshot dadosObjeto : dataSnapshot.getChildren()) {
                     if(dadosObjeto.getKey().equals(userId)) {
                         mClienteAtual = dadosObjeto.getValue(Cliente.class);
-                        mClienteAtual.setmEmail(getUsuarioAtual().getEmail());
+                        mClienteAtual.setMEmail(getUsuarioAtual().getEmail());
                         mClienteModificado = dadosObjeto.getValue(Cliente.class);
-                        mClienteModificado.setmEmail(getUsuarioAtual().getEmail());
+                        mClienteModificado.setMEmail(getUsuarioAtual().getEmail());
                         preencherCampos();
                         break;
                     }
@@ -130,14 +130,14 @@ public class PerfilActivity extends AppCompatActivity {
      */
     private void realizarAlteracaoAutenticacao() {
         AuthCredential credencial = EmailAuthProvider
-                .getCredential(Objects.requireNonNull(getUsuarioAtual().getEmail()), mClienteAtual.getmSenha());
+                .getCredential(Objects.requireNonNull(getUsuarioAtual().getEmail()), mClienteAtual.getMSenha());
         getUsuarioAtual()
                 .reauthenticate(credencial)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 getUsuarioAtual()
-                        .updateEmail(mClienteModificado.getmEmail())
+                        .updateEmail(mClienteModificado.getMEmail())
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -153,7 +153,7 @@ public class PerfilActivity extends AppCompatActivity {
                                                 getText(R.string.error_email_ja_utilizado),
                                                 Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, e.getMessage());
-                                        mClienteModificado.setmEmail(getUsuarioAtual().getEmail());
+                                        mClienteModificado.setMEmail(getUsuarioAtual().getEmail());
                                     }
                                     Log.d(TAG, "nao alterou o email no firebase auth");
                                 }
@@ -218,9 +218,9 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void povoarClienteModificado() {
-        mClienteModificado.setmEmail(mEtEmail.getText().toString());
-        mClienteModificado.setmNome(mEtNome.getText().toString());
-        mClienteModificado.setmTelefone(mEtTelefone.getText().toString());
+        mClienteModificado.setMEmail(mEtEmail.getText().toString());
+        mClienteModificado.setMNome(mEtNome.getText().toString());
+        mClienteModificado.setMTelefone(mEtTelefone.getText().toString());
     }
 
     private boolean verificarSeHaAlteracoes() {
@@ -232,14 +232,14 @@ public class PerfilActivity extends AppCompatActivity {
      * @return true se ha alteracao de e-mail
      */
     private boolean verificarSeHaAlteracaoEmail() {
-        return !Objects.requireNonNull(getUsuarioAtual().getEmail()).equalsIgnoreCase(mClienteModificado.getmEmail());
+        return !Objects.requireNonNull(getUsuarioAtual().getEmail()).equalsIgnoreCase(mClienteModificado.getMEmail());
     }
 
     private void preencherCampos() {
         if(mClienteAtual != null){
-            mEtNome.setText(mClienteAtual.getmNome());
-            mEtEmail.setText(mClienteAtual.getmEmail());
-            mEtTelefone.setText(mClienteAtual.getmTelefone());
+            mEtNome.setText(mClienteAtual.getMNome());
+            mEtEmail.setText(mClienteAtual.getMEmail());
+            mEtTelefone.setText(mClienteAtual.getMTelefone());
         }
     }
 
@@ -250,7 +250,7 @@ public class PerfilActivity extends AppCompatActivity {
         if(TextUtils.isEmpty(mEtEmail.getText().toString())){
             throw new ValidationException(getString(R.string.error_email_nao_pode_ser_vazio));
         }
-        if(!StringUtils.isEmailValido(mEtEmail.getText().toString())){
+        if(!StringUtils.INSTANCE.isEmailValido(mEtEmail.getText().toString())){
             throw new ValidationException(getString(R.string.error_email_invalido));
         }
 

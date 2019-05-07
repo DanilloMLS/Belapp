@@ -30,9 +30,10 @@ import br.com.belapp.belapp.model.Agendamento;
 
 import br.com.belapp.belapp.model.Estabelecimento;
 import br.com.belapp.belapp.model.HorarioAtendimento;
-import br.com.belapp.belapp.presenter.ApplicationClass;
 import br.com.belapp.belapp.presenter.SalaoAdapter;
 import br.com.belapp.belapp.utils.DateUtils;
+
+import static br.com.belapp.belapp.utils.CalculaDistanciaKt.calculaDistancia;
 
 
 public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.ItemClicked{
@@ -115,7 +116,7 @@ public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.It
         bundle.putSerializable("estabelecimento", mResultados.get(index));
         intent.putExtras(bundle);
         startActivity(intent);
-        Toast.makeText(SaloesActivity.this, mResultados.get(index).getmNome(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(SaloesActivity.this, mResultados.get(index).getMNome(), Toast.LENGTH_SHORT).show();
     }
 
     private void buscar(){
@@ -124,23 +125,23 @@ public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.It
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Estabelecimento estabelecimento = dataSnapshot.getValue(Estabelecimento.class);
-                estabelecimento.setmDistancia(ApplicationClass.calculaDistancia(mLatitude, mLongitude,
-                        estabelecimento.getmLatitude(), estabelecimento.getmLongitude()));
+                estabelecimento.setMDistancia(calculaDistancia(mLatitude, mLongitude,
+                        estabelecimento.getMLatitude(), estabelecimento.getMLongitude()));
                         mEstabelecimentos.add(estabelecimento);
 
                 if (!mIds.isEmpty() && !mCategoria.isEmpty()){
                     for (int i = 0; i < mIds.size(); i++){
-                        if (estabelecimento.getmEid().equals(mIds.get(i)) && mIdcateg.get(i).equals(mCategoria)){
+                        if (estabelecimento.getMEid().equals(mIds.get(i)) && mIdcateg.get(i).equals(mCategoria)){
                                mResultados.add(estabelecimento);
                             break;
                         }
                     }
-                } else if((mEndereco.isEmpty() || estabelecimento.getmCidade().toLowerCase().contains(mEndereco.toLowerCase()) ||
-                        estabelecimento.getmRua().toLowerCase().contains(mEndereco.toLowerCase()) ||
-                        estabelecimento.getmBairro().toLowerCase().contains(mEndereco.toLowerCase())) && (
-                                mEstab.isEmpty() || estabelecimento.getmNome().toLowerCase().contains(mEstab.toLowerCase()))){
+                } else if((mEndereco.isEmpty() || estabelecimento.getMCidade().toLowerCase().contains(mEndereco.toLowerCase()) ||
+                        estabelecimento.getMRua().toLowerCase().contains(mEndereco.toLowerCase()) ||
+                        estabelecimento.getMBairro().toLowerCase().contains(mEndereco.toLowerCase())) && (
+                                mEstab.isEmpty() || estabelecimento.getMNome().toLowerCase().contains(mEstab.toLowerCase()))){
                         for (int i = 0; i < mPrecoServ.size(); i++){
-                            if((mPreco >= Double.valueOf(mPrecoServ.get(i)) && mServicos.get(i).equals(estabelecimento.getmEid())) &&
+                            if((mPreco >= Double.valueOf(mPrecoServ.get(i)) && mServicos.get(i).equals(estabelecimento.getMEid())) &&
                                     (mServcat.isEmpty() || mNomeServ.get(i).toLowerCase().contains(mServcat) ||
                                             mCategServ.get(i).toLowerCase().contains(mServcat))){
                                 //mResultados.add(estabelecimento);
@@ -153,7 +154,7 @@ public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.It
                 Collections.sort(mResultados, new Comparator<Estabelecimento>() {
                     @Override
                     public int compare(Estabelecimento o1, Estabelecimento o2) {
-                        return Double.compare(o1.getmDistancia(), o2.getmDistancia());
+                        return Double.compare(o1.getMDistancia(), o2.getMDistancia());
                     }
                 });
 
@@ -214,16 +215,16 @@ public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.It
         if(mAgendamentos != null) {
             ArrayList<Estabelecimento> estabelecimentosTemp = new ArrayList<>();
             for (int i = 0; i < mAgendamentos.size(); i++) {
-                String idEstab = mAgendamentos.get(i).getmEstabelecimento().getmEid();
-                int duracao = mAgendamentos.get(i).getmServico().getmDuracao();
+                String idEstab = mAgendamentos.get(i).getMEstabelecimento().getMEid();
+                int duracao = mAgendamentos.get(i).getMServico().getMDuracao();
                 if (mapaAgendamento.get(idEstab) != null) {
                     int valor = mapaAgendamento.get(idEstab);
                     valor += duracao;
                     mapaAgendamento.put(idEstab, valor);
                 } else {
                     mapaAgendamento.put(idEstab, duracao);
-                    if (!estabelecimentosTemp.contains(mAgendamentos.get(i).getmEstabelecimento())) {
-                        estabelecimentosTemp.add(mAgendamentos.get(i).getmEstabelecimento());
+                    if (!estabelecimentosTemp.contains(mAgendamentos.get(i).getMEstabelecimento())) {
+                        estabelecimentosTemp.add(mAgendamentos.get(i).getMEstabelecimento());
                     }
                 }
             }
@@ -249,8 +250,8 @@ public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.It
             Iterator<Map.Entry<String, Integer>> iterator = set.iterator();
             while (iterator.hasNext()) {
                 Map.Entry mapa = iterator.next();
-                               if (String.valueOf(mapa.getKey()).equals(estabelecimento.getmEid())) {
-                    int tempoTrabalho = horarios.getmFechamento() - horarios.getmAbertura();
+                               if (String.valueOf(mapa.getKey()).equals(estabelecimento.getMEid())) {
+                    int tempoTrabalho = horarios.getMFechamento() - horarios.getMAbertura();
                     if ((Integer) mapa.getValue() >= tempoTrabalho) return;
                 }
             }
@@ -263,9 +264,9 @@ public class SaloesActivity extends AppCompatActivity implements SalaoAdapter.It
      */
     private HorarioAtendimento obterHorarioFuncionamentoEstabelecimento(Estabelecimento estabelecimento){
         HorarioAtendimento horariosDiaSelecionado = null;
-        for(HorarioAtendimento horarioAtendimento: estabelecimento.getmHorariosAtendimento()){
+        for(HorarioAtendimento horarioAtendimento: estabelecimento.getMHorariosAtendimento()){
             if(horarioAtendimento!= null
-                    && horarioAtendimento.getmDiaFuncionamento() == DateUtils.getDiaDaSemanaEmData(mDataSelecionada)){
+                    && horarioAtendimento.getMDiaFuncionamento() == DateUtils.INSTANCE.getDiaDaSemanaEmData(mDataSelecionada)){
                 horariosDiaSelecionado = horarioAtendimento;
             }
         }

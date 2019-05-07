@@ -124,23 +124,23 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void exibirInfo(Estabelecimento estab){
-        String endereco = estab.getmRua()+", "+estab.getmNumero()+", "
-                +estab.getmBairro()+", "+estab.getmCidade()+", "+estab.getmCep();
+        String endereco = estab.getMRua()+", "+estab.getMNumero()+", "
+                +estab.getMBairro()+", "+estab.getMCidade()+", "+estab.getMCep();
         tvInfoEndereco.setText(endereco);
-        tvInfoDescricao.setText(estab.getmDescricao());
-        tvInfoHorario.setText(estab.getmHorarios());
-        tvInfoTelefone.setText(estab.getmTelefone());
+        tvInfoDescricao.setText(estab.getMDescricao());
+        tvInfoHorario.setText(estab.getMHorarios());
+        tvInfoTelefone.setText(estab.getMTelefone());
 
-        if (estab.getmLinkEmail().equals("-")){
+        if (estab.getMLinkEmail().equals("-")){
             ivGmail.setVisibility(View.GONE);
         }
-        if (estab.getmLinkSite().equals("-")){
+        if (estab.getMLinkSite().equals("-")){
             ivSite.setVisibility(View.GONE);
         }
-        if (estab.getmLinkFacebook().equals("-")){
+        if (estab.getMLinkFacebook().equals("-")){
             ivFacebook.setVisibility(View.GONE);
         }
-        if (estab.getmLinkInstagram().equals("-")){
+        if (estab.getMLinkInstagram().equals("-")){
             ivInstagram.setVisibility(View.GONE);
         }
     }
@@ -157,11 +157,11 @@ public class InfoActivity extends AppCompatActivity {
 
     private void abrirEndereco(){
         Uri gmmIntentUri = Uri.parse("geo:"
-                +estabelecimento.getmLatitude()+","
-                +estabelecimento.getmLongitude()+"?q="
-                +estabelecimento.getmRua()+", "
-                +estabelecimento.getmNumero()+", "
-                +estabelecimento.getmCidade());
+                +estabelecimento.getMLatitude()+","
+                +estabelecimento.getMLongitude()+"?q="
+                +estabelecimento.getMRua()+", "
+                +estabelecimento.getMNumero()+", "
+                +estabelecimento.getMCidade());
 
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
@@ -171,8 +171,8 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void ligar(){
-        if (!estabelecimento.getmTelefone().equals("-")){
-            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+estabelecimento.getmTelefone()));
+        if (!estabelecimento.getMTelefone().equals("-")){
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+estabelecimento.getMTelefone()));
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
@@ -180,8 +180,8 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void abrirFacebook(){
-        if (!estabelecimento.getmLinkFacebook().equals("-")){
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(estabelecimento.getmLinkFacebook()));
+        if (!estabelecimento.getMLinkFacebook().equals("-")){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(estabelecimento.getMLinkFacebook()));
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
@@ -189,8 +189,8 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void abrirInstagram(){
-        if (!estabelecimento.getmLinkInstagram().equals("-")){
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(estabelecimento.getmLinkInstagram()));
+        if (!estabelecimento.getMLinkInstagram().equals("-")){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(estabelecimento.getMLinkInstagram()));
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
@@ -198,8 +198,8 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void abrirSite(){
-        if (!estabelecimento.getmLinkSite().equals("-")){
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+estabelecimento.getmLinkSite()));
+        if (!estabelecimento.getMLinkSite().equals("-")){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+estabelecimento.getMLinkSite()));
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
@@ -207,9 +207,9 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void abrirGmail(){
-        if (!estabelecimento.getmLinkEmail().equals("-")){
+        if (!estabelecimento.getMLinkEmail().equals("-")){
             String addresses[] = new String[1];
-            addresses[0] = estabelecimento.getmLinkEmail();
+            addresses[0] = estabelecimento.getMLinkEmail();
             String subject = "Dúvidas";
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setData(Uri.parse("mailto:")); // only email apps should handle this

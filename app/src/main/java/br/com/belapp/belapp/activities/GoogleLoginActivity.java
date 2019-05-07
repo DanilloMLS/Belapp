@@ -85,7 +85,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
        
 
 
-                firebaseAuth = ConfiguracaoFireBase.getFirebaseAutenticacao();
+                firebaseAuth = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {

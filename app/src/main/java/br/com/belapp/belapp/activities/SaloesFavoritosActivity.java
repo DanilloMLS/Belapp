@@ -1,6 +1,5 @@
 package br.com.belapp.belapp.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -28,10 +26,10 @@ import java.util.Comparator;
 import br.com.belapp.belapp.R;
 import br.com.belapp.belapp.model.ConfiguracaoFireBase;
 import br.com.belapp.belapp.model.Estabelecimento;
-import br.com.belapp.belapp.presenter.ApplicationClass;
 import br.com.belapp.belapp.presenter.SalaoAdapter;
 
 import static br.com.belapp.belapp.database.utils.FirebaseUtils.getUsuarioAtual;
+import static br.com.belapp.belapp.utils.CalculaDistanciaKt.calculaDistancia;
 
 public class SaloesFavoritosActivity extends AppCompatActivity implements SalaoAdapter.ItemClicked {
 
@@ -80,7 +78,7 @@ public class SaloesFavoritosActivity extends AppCompatActivity implements SalaoA
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        databaseReference = ConfiguracaoFireBase.getFirebase();
+        databaseReference = ConfiguracaoFireBase.INSTANCE.getFirebase();
 
         estabelecimentos = new ArrayList<>();
         resultados = new ArrayList<>();
@@ -94,7 +92,7 @@ public class SaloesFavoritosActivity extends AppCompatActivity implements SalaoA
         Collections.sort(resultados, new Comparator<Estabelecimento>() {
             @Override
             public int compare(Estabelecimento o1, Estabelecimento o2) {
-                return Double.compare(o1.getmDistancia(), o2.getmDistancia());
+                return Double.compare(o1.getMDistancia(), o2.getMDistancia());
             }
         });
     }
@@ -103,14 +101,14 @@ public class SaloesFavoritosActivity extends AppCompatActivity implements SalaoA
     @Override
     public void onItemClicked(int index) {
         Intent intent = new Intent(SaloesFavoritosActivity.this, PagSalaoActivity.class);
-        intent.putExtra("salao", resultados.get(index).getmEid());
-        intent.putExtra("nome", resultados.get(index).getmNome());
+        intent.putExtra("salao", resultados.get(index).getMEid());
+        intent.putExtra("nome", resultados.get(index).getMNome());
         Bundle bundle = new Bundle();
         bundle.putSerializable("estabelecimento", resultados.get(index));
         intent.putExtras(bundle);
         startActivity(intent);
         SaloesFavoritosActivity.this.finish();
-        Toast.makeText(SaloesFavoritosActivity.this, resultados.get(index).getmNome(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(SaloesFavoritosActivity.this, resultados.get(index).getMNome(), Toast.LENGTH_SHORT).show();
     }
 
     private void buscar() {
@@ -119,14 +117,14 @@ public class SaloesFavoritosActivity extends AppCompatActivity implements SalaoA
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Estabelecimento estabelecimento = dataSnapshot.getValue(Estabelecimento.class);
-                estabelecimento.setmDistancia(ApplicationClass.calculaDistancia(latitude, longitude,
-                        estabelecimento.getmLatitude(), estabelecimento.getmLongitude()));
+                estabelecimento.setMDistancia(calculaDistancia(latitude, longitude,
+                        estabelecimento.getMLatitude(), estabelecimento.getMLongitude()));
                 estabelecimentos.add(estabelecimento);
 
                 if (!ids.isEmpty()) {
                     for (int i = 0; i < ids.size(); i++) {
 
-                        verificaCurtida(estabelecimento.getmEid(), estabelecimento);
+                        verificaCurtida(estabelecimento.getMEid(), estabelecimento);
                         break;
 
 

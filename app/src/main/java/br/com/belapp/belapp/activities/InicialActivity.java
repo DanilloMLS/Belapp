@@ -5,12 +5,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 
 import android.app.ProgressDialog;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,9 +15,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -33,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,22 +46,16 @@ import br.com.belapp.belapp.R;
 
 import br.com.belapp.belapp.model.Servico;
 import br.com.belapp.belapp.servicos.MyServiceLocation;
-import br.com.belapp.belapp.servicos.Permissao;
+
+import static br.com.belapp.belapp.servicos.PermissaoKt.validaPermissoes;
 
 
-public class InicialActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-    //para pegar dados de  localização via dispositivo
-    private LocationManager locationMangaer=null;
-    private LocationListener locationListener=null;
+public class InicialActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //logalização
     MyServiceLocation localizacao;
     private ProgressDialog mProgressDialog;
     private ArrayList<String> ids;
     private ArrayList<String> idcateg;
-    private ArrayList<Servico> servicos;
-    private String categoria;
     private String[] permissoesNecessarias = new String[]{
             Manifest.permission.GET_ACCOUNTS,
             Manifest.permission.READ_CONTACTS,
@@ -79,9 +66,7 @@ public class InicialActivity extends AppCompatActivity
     };
     private boolean mPermissoesConcedidas;
     private static final String TAG = "Debug";
-    private Boolean flag = false;
 
-    private TextView AbriActivityLogin;
     ImageButton btnBarba, btnCabelo, btnDepilacao, btnOlho, btnSobrancelha, btnUnha;
 
     @Override
@@ -89,20 +74,20 @@ public class InicialActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPermissoesConcedidas = Permissao.validaPermissoes(1,this,permissoesNecessarias);
+        mPermissoesConcedidas = validaPermissoes(1,this,permissoesNecessarias);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_activity_main);
         setSupportActionBar(toolbar);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         localizar();
@@ -123,7 +108,6 @@ public class InicialActivity extends AppCompatActivity
 
         ids = new ArrayList<>();
         idcateg = new ArrayList<>();
-        servicos = new ArrayList<>();
 
         buscar();
         dialogBuscando();
@@ -135,7 +119,6 @@ public class InicialActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if(mPermissoesConcedidas) {
-                    categoria = "Barba";
                     Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
                     intent.putExtra("mCategoria", "Barba");
                     intent.putExtra("mLatitude", localizacao.getLatitude());
@@ -152,7 +135,6 @@ public class InicialActivity extends AppCompatActivity
             public void onClick(View v) {
 
                 if(mPermissoesConcedidas) {
-                    categoria = "Cabelo";
                     Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
                     intent.putExtra("mCategoria", "Cabelo");
                     intent.putExtra("mLatitude", localizacao.getLatitude());
@@ -168,7 +150,6 @@ public class InicialActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if(mPermissoesConcedidas) {
-                    categoria = "Depilação";
                     Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
                     intent.putExtra("mCategoria", "Depilação");
                     intent.putExtra("mLatitude", localizacao.getLatitude());
@@ -184,7 +165,6 @@ public class InicialActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if(mPermissoesConcedidas) {
-                    categoria = "Olho";
                     Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
                     intent.putExtra("mCategoria", "Olho");
                     intent.putExtra("mLatitude", localizacao.getLatitude());
@@ -200,7 +180,6 @@ public class InicialActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if(mPermissoesConcedidas) {
-                    categoria = "Sobrancelha";
                     Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
                     intent.putExtra("mCategoria", "Sobrancelha");
                     intent.putExtra("mLatitude", localizacao.getLatitude());
@@ -216,7 +195,6 @@ public class InicialActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if(mPermissoesConcedidas) {
-                    categoria = "Unha";
                     Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
                     intent.putExtra("mCategoria", "Unha");
                     intent.putExtra("mLatitude", localizacao.getLatitude());
@@ -233,8 +211,9 @@ public class InicialActivity extends AppCompatActivity
     @SuppressLint("MissingPermission")
     private void localizar(){
         if(mPermissoesConcedidas) {
-            locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationListener = new MyLocationListener();
+            //para pegar dados de  localização via dispositivo
+            LocationManager locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            LocationListener locationListener = new MyLocationListener();
 
             locationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
 
@@ -257,10 +236,8 @@ public class InicialActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Servico servico = dataSnapshot.getValue(Servico.class);
-                servicos.add(servico);
-
-                ids.add(servico.getmEstabId());
-                idcateg.add(servico.getmCategoria());
+                ids.add(servico.getMEstabId());
+                idcateg.add(servico.getMCategoria());
 
                // myAdapter.notifyDataSetChanged();
                 mProgressDialog.dismiss();

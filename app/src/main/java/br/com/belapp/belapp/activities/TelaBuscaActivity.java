@@ -75,27 +75,24 @@ public class TelaBuscaActivity extends AppCompatActivity implements DatePickerDi
         buscarServCatPreco();
         dialogBuscando();
 
-        metDataBusca.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Abre a janela de diálogo para a escolha da data.
-                now = Calendar.getInstance();
+        metDataBusca.setOnClickListener(view -> {
+            // Abre a janela de diálogo para a escolha da data.
+            now = Calendar.getInstance();
 
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        TelaBuscaActivity.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
-                );
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    TelaBuscaActivity.this,
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH)
+            );
 
-                dpd.setThemeDark(false);
-                dpd.vibrate(true);
-                dpd.dismissOnPause(true);
-                dpd.setFirstDayOfWeek(Calendar.MONDAY);
-                dpd.setMinDate(now);
-                dpd.setAccentColor(Color.parseColor("#260CE8"));
-                dpd.show(getFragmentManager(), "Selecione a data");
-            }
+            dpd.setThemeDark(false);
+            dpd.vibrate(true);
+            dpd.dismissOnPause(true);
+            dpd.setFirstDayOfWeek(Calendar.MONDAY);
+            dpd.setMinDate(now);
+            dpd.setAccentColor(Color.parseColor("#260CE8"));
+            dpd.show(getFragmentManager(), "Selecione a data");
         });
 
         metDataBusca.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -107,46 +104,43 @@ public class TelaBuscaActivity extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        btnBuscar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String estabelecimento = etEstabelecimento.getText().toString().trim();
-                String endereco = etEndereco.getText().toString().trim();
-                String mServcat = etServCat.getText().toString().trim();
-                if (!etPreco.getText().toString().equals("")){
-                    mPreco = Integer.parseInt(etPreco.getText().toString().trim());
-                } else{
-                    mPreco = 300;
-                }
+        btnBuscar.setOnClickListener(v -> {
+            String estabelecimento = etEstabelecimento.getText().toString().trim();
+            String endereco = etEndereco.getText().toString().trim();
+            String mServcat = etServCat.getText().toString().trim();
+            if (!etPreco.getText().toString().equals("")){
+                mPreco = Integer.parseInt(etPreco.getText().toString().trim());
+            } else{
+                mPreco = 300;
+            }
 
-                double latitude = getIntent().getDoubleExtra("latitude", -8);
-                double longitude = getIntent().getDoubleExtra("longitude", -36);
+            double latitude = getIntent().getDoubleExtra("latitude", -8);
+            double longitude = getIntent().getDoubleExtra("longitude", -36);
 
-                if (!estabelecimento.isEmpty() || !endereco.isEmpty() || !mServcat.isEmpty() || !etPreco.getText().toString().equals("") || !mDataSelecionada.equals("")){
-                    Intent intent = new Intent(TelaBuscaActivity.this, SaloesActivity.class);
-                    intent.putExtra("mEstabelecimento", estabelecimento);
-                    intent.putExtra("mEndereco", endereco);
-                    intent.putExtra("mServcat", mServcat);
-                    intent.putExtra("mPreco", mPreco);
-                    intent.putExtra("mLatitude", latitude);
-                    intent.putExtra("mLongitude", longitude);
-                    intent.putExtra("mCategoria", "");
-                    intent.putExtra("mIds", mIds);
-                    intent.putExtra("mIdcateg", mIdcateg);
-                    intent.putExtra("mServicos", mServicos);
-                    intent.putExtra("mCategServ", mCategServ);
-                    intent.putExtra("mPrecoServ", mPrecoServ);
-                    intent.putExtra("mNomeServ", mNomeServ);
-                    intent.putExtra("mDataSelecionada",mDataSelecionada);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("mAgendamentos",mAgendamentos);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+            if (!estabelecimento.isEmpty() || !endereco.isEmpty() || !mServcat.isEmpty() || !etPreco.getText().toString().equals("") || !mDataSelecionada.equals("")){
+                Intent intent = new Intent(TelaBuscaActivity.this, SaloesActivity.class);
+                intent.putExtra("mEstabelecimento", estabelecimento);
+                intent.putExtra("mEndereco", endereco);
+                intent.putExtra("mServcat", mServcat);
+                intent.putExtra("mPreco", mPreco);
+                intent.putExtra("mLatitude", latitude);
+                intent.putExtra("mLongitude", longitude);
+                intent.putExtra("mCategoria", "");
+                intent.putExtra("mIds", mIds);
+                intent.putExtra("mIdcateg", mIdcateg);
+                intent.putExtra("mServicos", mServicos);
+                intent.putExtra("mCategServ", mCategServ);
+                intent.putExtra("mPrecoServ", mPrecoServ);
+                intent.putExtra("mNomeServ", mNomeServ);
+                intent.putExtra("mDataSelecionada",mDataSelecionada);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("mAgendamentos",mAgendamentos);
+                intent.putExtras(bundle);
+                startActivity(intent);
 
-                }
-                else {
-                    Toast.makeText(TelaBuscaActivity.this, getString(R.string.digite_algum_dado), Toast.LENGTH_LONG).show();
-                }
+            }
+            else {
+                Toast.makeText(TelaBuscaActivity.this, getString(R.string.digite_algum_dado), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -159,10 +153,10 @@ public class TelaBuscaActivity extends AppCompatActivity implements DatePickerDi
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Servico servico = dataSnapshot.getValue(Servico.class);
-                mServicos.add(servico.getmEstabId()); //id estabelecimento
-                mCategServ.add(servico.getmCategoria()); //categoria do serviço
-                mPrecoServ.add(String.valueOf(servico.getmPreco())); //mPreco do serviço
-                mNomeServ.add(servico.getmNome());
+                mServicos.add(servico.getMEstabId()); //id estabelecimento
+                mCategServ.add(servico.getMCategoria()); //categoria do serviço
+                mPrecoServ.add(String.valueOf(servico.getMPreco())); //mPreco do serviço
+                mNomeServ.add(servico.getMNome());
 
                 mProgressDialog.dismiss();
             }
@@ -210,7 +204,7 @@ public class TelaBuscaActivity extends AppCompatActivity implements DatePickerDi
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, monthOfYear);
         now.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        mDataSelecionada = DateUtils.converterDataParaString(now);
+        mDataSelecionada = DateUtils.INSTANCE.converterDataParaString(now);
         metDataBusca.setText( mDataSelecionada);
         Log.d("TELA01",mDataSelecionada);
         buscarPorData(mDataSelecionada);
@@ -227,9 +221,9 @@ public class TelaBuscaActivity extends AppCompatActivity implements DatePickerDi
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                     Agendamento agendamento = dataSnapshot.getValue(Agendamento.class);
-                    if (Objects.requireNonNull(agendamento).getmData().equals(data)) {
+                    if (Objects.requireNonNull(agendamento).getMData().equals(data)) {
                         mAgendamentos.add(agendamento);
-                        Log.d("TELA02",agendamento.getmId());
+                        Log.d("TELA02",agendamento.getMId());
                     }
                 }
 

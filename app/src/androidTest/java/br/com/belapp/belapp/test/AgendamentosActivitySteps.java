@@ -46,7 +46,7 @@ public class AgendamentosActivitySteps extends DefaultTest{
     public void euInformoDataInvalida() {
         if(getAtualActivity() instanceof AgendarServicoActivity){
             AgendarServicoActivity activityAgendamento = (AgendarServicoActivity) getAtualActivity();
-            activityAgendamento.setData(DateUtils.gerarDataInvalida(activityAgendamento.getDiasFuncionamento()));
+            activityAgendamento.setData(DateUtils.INSTANCE.gerarDataInvalida(activityAgendamento.getDiasFuncionamento()));
         }
     }
 
@@ -82,7 +82,7 @@ public class AgendamentosActivitySteps extends DefaultTest{
         if(getAtualActivity() instanceof AgendarServicoActivity){
             AgendarServicoActivity activityAgendamento = (AgendarServicoActivity) getAtualActivity();
             activityAgendamento.setData(
-                    DateUtils.getSomaDiasComDataEspecifica(7,activityAgendamento.getDataAgendamento()));
+                    DateUtils.INSTANCE.getSomaDiasComDataEspecifica(7,activityAgendamento.getDataAgendamento()));
         }
     }
 

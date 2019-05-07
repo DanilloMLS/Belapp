@@ -21,7 +21,6 @@ public class MyServiceLocation extends Service implements LocationListener {
 
     private final Context mContext;
 
-
     boolean checkGPS = false;
 
 
@@ -30,6 +29,7 @@ public class MyServiceLocation extends Service implements LocationListener {
     boolean canGetLocation = false;
 
     Location loc;
+
     double latitude;
     double longitude;
 
@@ -37,12 +37,8 @@ public class MyServiceLocation extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
 
 
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
     protected LocationManager locationManager;
-
-    /*public MyServiceLocation(){
-        mContext = null;
-    }*/
 
     public MyServiceLocation(Context mContext) {
         this.mContext = mContext;

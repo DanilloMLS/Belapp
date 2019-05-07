@@ -69,17 +69,17 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
 
 
         tvServico.setText(String.format(Locale.getDefault(), "Serviço: %s",
-                mAgendamento.getmServico().getmNome()));
+                mAgendamento.getMServico().getMNome()));
         tvPreco.setText(String.format(Locale.getDefault(), "Preço: %s",
-                StringUtils.getDinheiro(mAgendamento.getmServico().getmPreco())));
+                StringUtils.INSTANCE.getDinheiro(mAgendamento.getMServico().getMPreco())));
         tvProfissional.setText(String.format(Locale.getDefault(), "Profissional: %s",
-                mAgendamento.getmProfissional().getNome()));
+                mAgendamento.getMProfissional().getNome()));
         tvEstabelecimento.setText(String.format(Locale.getDefault(), "Estabelecimento: %s",
-                mAgendamento.getmEstabelecimento().getmNome()));
+                mAgendamento.getMEstabelecimento().getMNome()));
 
         tvDiasFuncionamento.setText(
                 String.format("%s: %s", getString(R.string.app_dias_funcionamento),
-                        mAgendamento.getmEstabelecimento().getDiasFuncionamento()));
+                        mAgendamento.getMEstabelecimento().getDiasFuncionamento()));
 
 
         Button btnAlterarServico = findViewById(R.id.btnAlterarServico);
@@ -97,7 +97,7 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
                 validar();
                 adicionarDataEHoraNoAgendamento();
                 AgendamentoDAO dao = new AgendamentoDAO();
-                if(mAgendamento.getmId() != null){
+                if(mAgendamento.getMId() != null){
                     dao.update(mAgendamento);
                 }
                 else{
@@ -119,8 +119,8 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
         buscarAgendamentosCliente();
         bucarAgendamentosProfissional();
         mDataNaoMudou = true;
-        if(mAgendamento.getmData() != null){
-            mEdtData.setText(mAgendamento.getmData());
+        if(mAgendamento.getMData() != null){
+            mEdtData.setText(mAgendamento.getMData());
             filtrarHorarios();
             btnAlterarServico.setVisibility(View.VISIBLE);
         }
@@ -141,8 +141,8 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
     }
 
     private void adicionarDataEHoraNoAgendamento() {
-        mAgendamento.setmData(mEdtData.getText().toString());
-        mAgendamento.setmHora(((String) mSpHorariosDisponiveis.getSelectedItem()));
+        mAgendamento.setMData(mEdtData.getText().toString());
+        mAgendamento.setMHora(((String) mSpHorariosDisponiveis.getSelectedItem()));
     }
 
     private void configurarDatePicker() {
@@ -186,7 +186,7 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 Agendamento agendamento = dataSnapshot.getValue(Agendamento.class);
-                if (Objects.requireNonNull(agendamento).getmProfissional().equals(mAgendamento.getmProfissional())){
+                if (Objects.requireNonNull(agendamento).getMProfissional().equals(mAgendamento.getMProfissional())){
                     mAgendamentosProfissional.add(agendamento);
                 }
 
@@ -221,7 +221,7 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 Agendamento agendamento = dataSnapshot.getValue(Agendamento.class);
-                if (Objects.requireNonNull(agendamento).getmCliente().equals(mAgendamento.getmCliente())){
+                if (Objects.requireNonNull(agendamento).getMCliente().equals(mAgendamento.getMCliente())){
                     mAgendamentosCliente.add(agendamento);
                 }
 
@@ -255,14 +255,14 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, monthOfYear);
         now.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String DataSelecionada = DateUtils.converterDataParaString(now);
+        String DataSelecionada = DateUtils.INSTANCE.converterDataParaString(now);
         mEdtData.setText(DataSelecionada);
         //mEdtData.setText(String.format(Locale.getDefault(), "%d/%d/%d", dayOfMonth, (monthOfYear+1), year));
         filtrarHorarios();
     }
 
     private void checarMudancaData() {
-        if(mAgendamento.getmData() != null && !mEdtData.getText().toString().equals(mAgendamento.getmData())){
+        if(mAgendamento.getMData() != null && !mEdtData.getText().toString().equals(mAgendamento.getMData())){
             mDataNaoMudou = false;
         }
     }
@@ -278,9 +278,9 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
 
         // gera os horários possíveis, considerando o horário de abertura e fechamento do estabelecimento
         // e a duração do procedimento
-        for (int i = horariosDiaSelecionado.getmAbertura(); i < horariosDiaSelecionado.getmFechamento(); i += mAgendamento.getmServico().getmDuracao()){
+        for (int i = horariosDiaSelecionado.getMAbertura(); i < horariosDiaSelecionado.getMFechamento(); i += mAgendamento.getMServico().getMDuracao()){
 
-            mHorariosDisponiveis.add(DateUtils.getFormatoHora(i/60, i%60));
+            mHorariosDisponiveis.add(DateUtils.INSTANCE.getFormatoHora(i/60, i%60));
         }
         // agrupa os horários indisponíveis na agenda do cliente e do profissional
         Collection<String> horariosOcupadosCliente = obterListaHorarios(mAgendamentosCliente,mEdtData.getText().toString());
@@ -292,9 +292,9 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
         mHorariosDisponiveis.removeAll(horariosOcupadosProfissional);
         ArrayList<String> arrayHorarios = new ArrayList<>(mHorariosDisponiveis);
         // se for um reagendamento, o horário agendado anteriormente também estará disponível
-        if(mAgendamento.getmData() != null && mDataNaoMudou){
-            arrayHorarios.remove(mAgendamento.getmHora());
-            arrayHorarios.set(0, mAgendamento.getmHora());
+        if(mAgendamento.getMData() != null && mDataNaoMudou){
+            arrayHorarios.remove(mAgendamento.getMHora());
+            arrayHorarios.set(0, mAgendamento.getMHora());
         }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
@@ -319,9 +319,9 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
             throw new ValidationException(getString(R.string.error_selecione_uma_data));
         }
         boolean isAberto = false;
-        for(HorarioAtendimento horarioAtendimento: mAgendamento.getmEstabelecimento()
-                .getmHorariosAtendimento()){
-            if(horarioAtendimento!= null && horarioAtendimento.getmDiaFuncionamento() == DateUtils.getDiaDaSemanaEmData(mEdtData.getText().toString())){
+        for(HorarioAtendimento horarioAtendimento: mAgendamento.getMEstabelecimento()
+                .getMHorariosAtendimento()){
+            if(horarioAtendimento!= null && horarioAtendimento.getMDiaFuncionamento() == DateUtils.INSTANCE.getDiaDaSemanaEmData(mEdtData.getText().toString())){
                 isAberto = true;
             }
         }
@@ -346,8 +346,8 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
     private ArrayList<String> obterListaHorarios(ArrayList<Agendamento> agendamentos, String data){
         ArrayList<String> horarios = new ArrayList<>();
         for (Agendamento a: agendamentos){
-            if(a.getmData().equals(data)){
-                horarios.add(a.getmHora());
+            if(a.getMData().equals(data)){
+                horarios.add(a.getMHora());
             }
         }
         return horarios;
@@ -358,10 +358,10 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
      */
     private HorarioAtendimento obterHorarioFuncionamentoEstabelecimento(){
         HorarioAtendimento horariosDiaSelecionado = new HorarioAtendimento();
-        for(HorarioAtendimento horarioAtendimento: mAgendamento.getmEstabelecimento()
-                .getmHorariosAtendimento()){
+        for(HorarioAtendimento horarioAtendimento: mAgendamento.getMEstabelecimento()
+                .getMHorariosAtendimento()){
             if(horarioAtendimento!= null
-                    && horarioAtendimento.getmDiaFuncionamento() == DateUtils.getDiaDaSemanaEmData(mEdtData.getText().toString())){
+                    && horarioAtendimento.getMDiaFuncionamento() == DateUtils.INSTANCE.getDiaDaSemanaEmData(mEdtData.getText().toString())){
                 horariosDiaSelecionado = horarioAtendimento;
             }
         }
@@ -384,16 +384,16 @@ public class AgendarServicoActivity extends AppCompatActivity implements DatePic
 
     public Collection<Integer> getDiasFuncionamento(){
         Collection<Integer> dias = new ArrayList<>();
-        for(HorarioAtendimento horarioAtendimento: mAgendamento.getmEstabelecimento().getmHorariosAtendimento()){
+        for(HorarioAtendimento horarioAtendimento: mAgendamento.getMEstabelecimento().getMHorariosAtendimento()){
             if(horarioAtendimento != null) {
-                dias.add(horarioAtendimento.getmDiaFuncionamento());
+                dias.add(horarioAtendimento.getMDiaFuncionamento());
             }
         }
         return dias;
     }
 
     public String getDataAgendamento(){
-        return mAgendamento.getmData();
+        return mAgendamento.getMData();
     }
 
 }

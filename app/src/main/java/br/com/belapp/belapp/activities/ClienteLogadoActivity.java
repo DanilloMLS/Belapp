@@ -44,15 +44,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import br.com.belapp.belapp.R;
 import br.com.belapp.belapp.model.Agendamento;
 import br.com.belapp.belapp.model.Cliente;
 import br.com.belapp.belapp.model.Servico;
-import br.com.belapp.belapp.presenter.LocalizacaoCliente;
 import br.com.belapp.belapp.servicos.MyServiceLocation;
-import br.com.belapp.belapp.utils.DateUtils;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -67,7 +64,6 @@ public class ClienteLogadoActivity extends AppCompatActivity
         
 
     ImageButton btnBarba, btnCabelo, btnDepilacao, btnOlho, btnSobrancelha, btnUnha;
-    LocalizacaoCliente localCliente;
     //logalização
     MyServiceLocation localizao;
     private ArrayList permissionsToRequest;
@@ -263,8 +259,8 @@ public class ClienteLogadoActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Cliente cliente1 = dataSnapshot.getValue(Cliente.class);
-                    titulo.setText(cliente1.getmNome());
-                    subtitulo.setText(cliente1.getmEmail());
+                    titulo.setText(cliente1.getMNome());
+                    subtitulo.setText(cliente1.getMEmail());
                 }
 
                 @Override
@@ -295,8 +291,8 @@ public class ClienteLogadoActivity extends AppCompatActivity
                 Servico servico = dataSnapshot.getValue(Servico.class);
                 servicos.add(servico);
 
-                ids.add(servico.getmEstabId());
-                idcateg.add(servico.getmCategoria());
+                ids.add(servico.getMEstabId());
+                idcateg.add(servico.getMCategoria());
 
                 //myAdapter.notifyDataSetChanged();
                 mProgressDialog.dismiss();
@@ -518,7 +514,7 @@ public class ClienteLogadoActivity extends AppCompatActivity
                 Agendamento agendamento = dataSnapshot.getValue(Agendamento.class);
 
 
-                if(!mAgendamentos.contains(agendamento) && agendamento.getmCliente().equals(idUser))
+                if(!mAgendamentos.contains(agendamento) && agendamento.getMCliente().equals(idUser))
                 {
 
                     Notificacao("Agendamento", "Você tem um serviço agendado");
@@ -585,14 +581,5 @@ public class ClienteLogadoActivity extends AppCompatActivity
         assert mNotificationManager != null;
         mNotificationManager.notify(0 /* Request Code */, mBuilder.build());
     }
-
-    private void ordenarResultados(){
-        Collections.sort(mAgendamentos, (o1, o2) -> DateUtils
-                .getDiferencaEntreDuasDatasEspecificas(
-                        o2.getmData(),
-                        o1.getmData()));
-
-    }
-
 
 }

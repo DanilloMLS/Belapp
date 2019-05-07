@@ -1,6 +1,5 @@
 package br.com.belapp.belapp.activities;
 
-import android.app.Application;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +42,7 @@ public class FacebookLoginActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facebook_login);
 
-        mAutenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        mAutenticacao = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao();
 
         mGerenciador = CallbackManager.Factory.create();
 
@@ -138,8 +137,8 @@ public class FacebookLoginActivity extends AppCompatActivity implements View.OnC
                             //Toast.makeText(FacebookLoginActivity.this, "Sucesso ao cadastrar o usuário", Toast.LENGTH_LONG).show();
                             //Criando cliente
                             Cliente cliente = new Cliente();
-                            cliente.setmNome(usuario.getDisplayName());
-                            cliente.setmEmail(usuario.getEmail());
+                            cliente.setMNome(usuario.getDisplayName());
+                            cliente.setMEmail(usuario.getEmail());
                             //Salvar no BD
                             cliente.salvar(usuario.getUid());
                         } else {

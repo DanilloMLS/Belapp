@@ -139,7 +139,7 @@ public class DefaultTest {
     }
 
     public void logarPorEmail(String email, String senha){
-        FirebaseAuth autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        FirebaseAuth autenticacao = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao();
         if(autenticacao.getUid() == null) {
             autenticacao.signInWithEmailAndPassword(email, senha).
                     addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -174,7 +174,7 @@ public class DefaultTest {
     }
 
     public void deslogar(){
-        FirebaseAuth usuario = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        FirebaseAuth usuario = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao();
         if(usuario.getUid() != null) usuario.signOut();
     }
 

@@ -24,35 +24,25 @@ import br.com.belapp.belapp.model.ConfiguracaoFireBase;
 
 public class CadastroBasicoActivity extends AppCompatActivity {
 
-    private ImageView mBotaoFacebook , mBotaoGoogle;
     private EditText mCampoNome, mCampoSenha, mCampoEmail, mCampoTelefone, mCampoConfirmacaoSenha, mCampoConfirmacaoEmail;
-    private Button mBotaoCadastrar;
-    private Cliente cliente;
-    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_basico);
         //Cadastro com Facebook
-        mBotaoFacebook = findViewById(R.id.ivConectarFacebook);
-        mBotaoGoogle = findViewById(R.id.ivConectarGoogle);
+        ImageView mBotaoFacebook = findViewById(R.id.ivConectarFacebook);
+        ImageView mBotaoGoogle = findViewById(R.id.ivConectarGoogle);
 
-        mBotaoGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent loginGoogle = new Intent(CadastroBasicoActivity.this,GoogleLoginActivity.class);
-                startActivity(loginGoogle);
-            }
+        mBotaoGoogle.setOnClickListener(v -> {
+            Intent loginGoogle = new Intent(CadastroBasicoActivity.this,GoogleLoginActivity.class);
+            startActivity(loginGoogle);
         });
 
 
-        mBotaoFacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent loginFacebook = new Intent(CadastroBasicoActivity.this,FacebookLoginActivity.class);
-                startActivity(loginFacebook);
-            }
+        mBotaoFacebook.setOnClickListener(v -> {
+            Intent loginFacebook = new Intent(CadastroBasicoActivity.this,FacebookLoginActivity.class);
+            startActivity(loginFacebook);
         });
         //Cadastro com Formulário
         mCampoNome = findViewById(R.id.etNomeCadastro);
@@ -61,21 +51,18 @@ public class CadastroBasicoActivity extends AppCompatActivity {
         mCampoConfirmacaoSenha = findViewById(R.id.etConfirmcaoSenhaCadastro);
         mCampoConfirmacaoEmail = findViewById(R.id.etConfirmacaoEmailCadastro);
         mCampoTelefone = findViewById(R.id.etTelefoneCadastro);
-        mBotaoCadastrar = findViewById(R.id.btnCadastrar);
+        Button mBotaoCadastrar = findViewById(R.id.btnCadastrar);
 
-        mBotaoCadastrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String textoNome = mCampoNome.getText().toString();
-                String textoSenha = mCampoSenha.getText().toString();
-                String textoEmail = mCampoEmail.getText().toString();
-                String textoTelefone = mCampoTelefone.getText().toString();
-                String textoConfEmail = mCampoConfirmacaoEmail.getText().toString();
-                String textoConfSenha = mCampoConfirmacaoSenha.getText().toString();
-                //validar campos
-                validarCampos(textoNome, textoEmail, textoTelefone, textoSenha, textoConfEmail, textoConfSenha);
+        mBotaoCadastrar.setOnClickListener(v -> {
+            String textoNome = mCampoNome.getText().toString();
+            String textoSenha = mCampoSenha.getText().toString();
+            String textoEmail = mCampoEmail.getText().toString();
+            String textoTelefone = mCampoTelefone.getText().toString();
+            String textoConfEmail = mCampoConfirmacaoEmail.getText().toString();
+            String textoConfSenha = mCampoConfirmacaoSenha.getText().toString();
+            //validar campos
+            validarCampos(textoNome, textoEmail, textoTelefone, textoSenha, textoConfEmail, textoConfSenha);
 
-            }
         });
     }
 
@@ -88,7 +75,7 @@ public class CadastroBasicoActivity extends AppCompatActivity {
                     if (!textoSenha.isEmpty()) {
                         if(textoSenha.equals(textoConfSenha) && textoEmail.equals(textoConfEmail)) {
 
-                            cliente = criarCliente(textoNome, textoEmail, textoTelefone, textoSenha);
+                            Cliente cliente = criarCliente(textoNome, textoEmail, textoTelefone, textoSenha);
                             cadastrarUsuarios(cliente);
 
                         } else{
@@ -128,51 +115,48 @@ public class CadastroBasicoActivity extends AppCompatActivity {
     }
 
     public void cadastrarUsuarios(final Cliente cliente) {
-        autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        FirebaseAuth autenticacao = ConfiguracaoFireBase.INSTANCE.getFirebaseAutenticacao();
 
-        autenticacao.createUserWithEmailAndPassword(cliente.getmEmail(), cliente.getmSenha()).
-                addOnCompleteListener(CadastroBasicoActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            cliente.salvar(task.getResult().getUser().getUid());
-                            Toast.makeText(CadastroBasicoActivity.this,
-                                    R.string.sucess_cadastro,
-                                    Toast.LENGTH_SHORT).show();
-                            abrirTelaPrincipal();
-                        } else {
-                            //tratamento de exceções do cadastro
-                            String excecao = "";
-                            try {
-                                throw task.getException();
-                            } catch (FirebaseAuthWeakPasswordException e) {
-                                excecao = "Digite uma senha com 6 ou mais caracteres!";
+        autenticacao.createUserWithEmailAndPassword(cliente.getMEmail(), cliente.getMSenha()).
+                addOnCompleteListener(CadastroBasicoActivity.this, task -> {
+                    if (task.isSuccessful()) {
+                        cliente.salvar(task.getResult().getUser().getUid());
+                        Toast.makeText(CadastroBasicoActivity.this,
+                                R.string.sucess_cadastro,
+                                Toast.LENGTH_SHORT).show();
+                        abrirTelaPrincipal();
+                    } else {
+                        //tratamento de exceções do cadastro
+                        String excecao;
+                        try {
+                            throw task.getException();
+                        } catch (FirebaseAuthWeakPasswordException e) {
+                            excecao = "Digite uma senha com 6 ou mais caracteres!";
 
-                            } catch (FirebaseAuthInvalidCredentialsException e) {
-                                excecao = "Por favor digite um email válido!";
+                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                            excecao = "Por favor digite um email válido!";
 
-                            } catch (FirebaseAuthUserCollisionException e) {
-                                excecao = "já existe cadastro para esse email!";
+                        } catch (FirebaseAuthUserCollisionException e) {
+                            excecao = "já existe cadastro para esse email!";
 
-                            }catch (Exception e){
-                                excecao= "Erro a cadastrar usuario"+e.getMessage();
-                                e.printStackTrace();
-                            }
-
-                            Toast.makeText(CadastroBasicoActivity.this,
-                                    excecao,
-                                    Toast.LENGTH_SHORT).show();
+                        }catch (Exception e){
+                            excecao= "Erro a cadastrar usuario"+e.getMessage();
+                            e.printStackTrace();
                         }
+
+                        Toast.makeText(CadastroBasicoActivity.this,
+                                excecao,
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private Cliente criarCliente(String nome, String email, String telefone, String senha) {
         Cliente cliente = new Cliente();
-        cliente.setmNome(nome);
-        cliente.setmEmail(email);
-        cliente.setmTelefone(telefone);
-        cliente.setmSenha(senha);
+        cliente.setMNome(nome);
+        cliente.setMEmail(email);
+        cliente.setMTelefone(telefone);
+        cliente.setMSenha(senha);
         return cliente;
     }
 

@@ -27,11 +27,11 @@ import br.com.belapp.belapp.R;
 import br.com.belapp.belapp.model.ConfiguracaoFireBase;
 import br.com.belapp.belapp.model.Estabelecimento;
 import br.com.belapp.belapp.model.Promocoes;
-import br.com.belapp.belapp.presenter.ApplicationClass;
 import br.com.belapp.belapp.presenter.PromocaoAdapter;
 
 
 import static br.com.belapp.belapp.database.utils.FirebaseUtils.getUsuarioAtual;
+import static br.com.belapp.belapp.utils.CalculaDistanciaKt.calculaDistancia;
 
 public class PromocoesActivity extends AppCompatActivity implements PromocaoAdapter.ItemClicked  {
 
@@ -75,7 +75,7 @@ public class PromocoesActivity extends AppCompatActivity implements PromocaoAdap
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        databaseReference = ConfiguracaoFireBase.getFirebase();
+        databaseReference = ConfiguracaoFireBase.INSTANCE.getFirebase();
 
         estabelecimentos = new ArrayList<>();
         resultados = new ArrayList<>();
@@ -89,7 +89,7 @@ public class PromocoesActivity extends AppCompatActivity implements PromocaoAdap
         Collections.sort(resultados, new Comparator<Estabelecimento>() {
             @Override
             public int compare(Estabelecimento o1, Estabelecimento o2) {
-                return Double.compare(o1.getmDistancia(), o2.getmDistancia());
+                return Double.compare(o1.getMDistancia(), o2.getMDistancia());
             }
         });
 
@@ -100,13 +100,13 @@ public class PromocoesActivity extends AppCompatActivity implements PromocaoAdap
     @Override
     public void onItemClicked(int index) {
         Intent intent = new Intent(PromocoesActivity.this, PagSalaoActivity.class);
-        intent.putExtra("salao", resultados.get(index).getmEid());
-        intent.putExtra("nome", resultados.get(index).getmNome());
+        intent.putExtra("salao", resultados.get(index).getMEid());
+        intent.putExtra("nome", resultados.get(index).getMNome());
         Bundle bundle = new Bundle();
         bundle.putSerializable("estabelecimento", resultados.get(index));
         intent.putExtras(bundle);
         startActivity(intent);
-        Toast.makeText(PromocoesActivity.this, resultados.get(index).getmNome(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(PromocoesActivity.this, resultados.get(index).getMNome(), Toast.LENGTH_SHORT).show();
     }
 
     private void buscar() {
@@ -115,13 +115,13 @@ public class PromocoesActivity extends AppCompatActivity implements PromocaoAdap
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Estabelecimento estabelecimento = dataSnapshot.getValue(Estabelecimento.class);
-                estabelecimento.setmDistancia(ApplicationClass.calculaDistancia(latitude, longitude,
-                        estabelecimento.getmLatitude(), estabelecimento.getmLongitude()));
+                estabelecimento.setMDistancia(calculaDistancia(latitude, longitude,
+                        estabelecimento.getMLatitude(), estabelecimento.getMLongitude()));
                 estabelecimentos.add(estabelecimento);
 
 
 
-                verificaPromocao(estabelecimento.getmEid(), estabelecimento);
+                verificaPromocao(estabelecimento.getMEid(), estabelecimento);
 
 
                 mProgressDialog.dismiss();

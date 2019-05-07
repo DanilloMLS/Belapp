@@ -25,7 +25,8 @@ import br.com.belapp.belapp.model.Estabelecimento;
 import br.com.belapp.belapp.model.Profissional;
 import br.com.belapp.belapp.model.Servico;
 import br.com.belapp.belapp.presenter.FuncionarioAdapter;
-import br.com.belapp.belapp.servicos.Permissao;
+
+import static br.com.belapp.belapp.servicos.PermissaoKt.verificarPermissaoRestritivo;
 
 public class FuncionariosActivity extends AppCompatActivity implements FuncionarioAdapter.ItemClicked, FuncionarioAdapter.AgendarButtonClicked{
 
@@ -84,7 +85,7 @@ public class FuncionariosActivity extends AppCompatActivity implements Funcionar
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Profissional profissional = dataSnapshot.getValue(Profissional.class);
-                if (profissional.getmId().equals(mServico.getmProfissionais())){
+                if (profissional.getMId().equals(mServico.getMProfissionais())){
                     profissionais.add(profissional);
                 }
                 myAdapter.notifyDataSetChanged();
@@ -124,14 +125,14 @@ public class FuncionariosActivity extends AppCompatActivity implements Funcionar
 
     @Override
     public void onAgendarButtonClicked(int index) {
-        if(Permissao.verificarPermissaoRestritivo(FuncionariosActivity.this)) {
+        if(verificarPermissaoRestritivo(FuncionariosActivity.this)) {
             if (mAgendamento == null) {
                 mAgendamento = new Agendamento();
             }
-            mAgendamento.setmCliente(FirebaseUtils.getUsuarioAtual().getUid());
-            mAgendamento.setmEstabelecimento(mEstabelecimento);
-            mAgendamento.setmServico(mServico);
-            mAgendamento.setmProfissional(profissionais.get(index));
+            mAgendamento.setMCliente(FirebaseUtils.getUsuarioAtual().getUid());
+            mAgendamento.setMEstabelecimento(mEstabelecimento);
+            mAgendamento.setMServico(mServico);
+            mAgendamento.setMProfissional(profissionais.get(index));
 
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
@@ -145,7 +146,7 @@ public class FuncionariosActivity extends AppCompatActivity implements Funcionar
     /*private void selProfissionais(String servico){
         //ArrayList<Profissional> profissionais = new ArrayList<Profissional>();
         for (int i = 0; i < ApplicationClass.servicos.size(); i++){
-            if (ApplicationClass.servicos.get(i).getmId().equals(servico)){
+            if (ApplicationClass.servicos.get(i).getMId().equals(servico)){
                 profissionais.add(ApplicationClass.servicos.get(i).getProfissionais());
             }
         }

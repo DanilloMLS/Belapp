@@ -35,10 +35,11 @@ import br.com.belapp.belapp.model.Estabelecimento;
 import br.com.belapp.belapp.model.Favorito;
 import br.com.belapp.belapp.model.Servico;
 import br.com.belapp.belapp.presenter.ServicoAdapter;
-import br.com.belapp.belapp.servicos.Permissao;
 import br.com.belapp.belapp.utils.ImageDownloaderTask;
 
 import static br.com.belapp.belapp.database.utils.FirebaseUtils.getUsuarioAtual;
+import static br.com.belapp.belapp.servicos.PermissaoKt.estaLogado;
+import static br.com.belapp.belapp.servicos.PermissaoKt.verificarPermissaoRestritivo;
 
 public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapter.ItemClicked {
 
@@ -87,14 +88,14 @@ public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapte
         mRecyclerView.setLayoutManager(mLayoutManager);
         if(getIntent().hasExtra("estabelecimento") ){
             mEstabelecimento = (Estabelecimento) getIntent().getSerializableExtra("estabelecimento");
-            mSalao = mEstabelecimento.getmEid();
-            tvNomeSalao.setText(mEstabelecimento.getmNome());
+            mSalao = mEstabelecimento.getMEid();
+            tvNomeSalao.setText(mEstabelecimento.getMNome());
         }
         if(getIntent().hasExtra("agendamento")){
             mAgendamento = (Agendamento) getIntent().getSerializableExtra("agendamento");
-            mEstabelecimento = mAgendamento.getmEstabelecimento();
-            mSalao = mEstabelecimento.getmEid();
-            tvNomeSalao.setText(mEstabelecimento.getmNome());
+            mEstabelecimento = mAgendamento.getMEstabelecimento();
+            mSalao = mEstabelecimento.getMEid();
+            tvNomeSalao.setText(mEstabelecimento.getMNome());
         }
         if(getIntent().hasExtra("salao")){
             mSalao = getIntent().getStringExtra("salao");
@@ -114,9 +115,9 @@ public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapte
         mMyAdapter = new ServicoAdapter(this, mServicos);
         mRecyclerView.setAdapter(mMyAdapter);
 
-        mDatabaseReference = ConfiguracaoFireBase.getFirebase();
+        mDatabaseReference = ConfiguracaoFireBase.INSTANCE.getFirebase();
 
-        if(Permissao.estaLogado()) {
+        if(estaLogado()) {
             mUserId = getUsuarioAtual().getUid();
             verificaCurtida();
         }
@@ -138,7 +139,7 @@ public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapte
         mLikeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                if(Permissao.verificarPermissaoRestritivo(PagSalaoActivity.this)) {
+                if(verificarPermissaoRestritivo(PagSalaoActivity.this)) {
                     curtir();
                     Toast.makeText(PagSalaoActivity.this, getString(R.string.adicionando_favorito), Toast.LENGTH_LONG).show();
                 }
@@ -146,7 +147,7 @@ public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapte
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                if(Permissao.verificarPermissaoRestritivo(PagSalaoActivity.this)) {
+                if(verificarPermissaoRestritivo(PagSalaoActivity.this)) {
                     descurtir();
                     Toast.makeText(PagSalaoActivity.this, getString(R.string.retirando_favoritoo), Toast.LENGTH_LONG).show();
                 }
@@ -190,11 +191,11 @@ public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapte
      */
     private void checarMudancaServico(Servico servico) {
         // se o serviço mudou, as outras informações não são necessarias mais
-        if(mAgendamento != null && !mAgendamento.getmServico().equals(servico)){
-            mAgendamento.setmServico(servico);
-            mAgendamento.setmData(null);
-            mAgendamento.setmHora(null);
-            mAgendamento.setmProfissional(null);
+        if(mAgendamento != null && !mAgendamento.getMServico().equals(servico)){
+            mAgendamento.setMServico(servico);
+            mAgendamento.setMData(null);
+            mAgendamento.setMHora(null);
+            mAgendamento.setMProfissional(null);
         }
     }
 
@@ -205,7 +206,7 @@ public class PagSalaoActivity extends AppCompatActivity implements ServicoAdapte
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Servico servico = dataSnapshot.getValue(Servico.class);
-                if (servico.getmEstabId().equals(mSalao)){
+                if (servico.getMEstabId().equals(mSalao)){
                     mServicos.add(servico);
                 }
                 mMyAdapter.notifyDataSetChanged();
