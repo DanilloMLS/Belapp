@@ -4,16 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -95,7 +95,7 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
         mRecyclerView = findViewById(R.id.rvAgendamentos);
         mRecyclerView.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
         mAgendamentos = new ArrayList<Agendamento>();
@@ -144,7 +144,7 @@ public class AgendamentosActivity extends AppCompatActivity implements Agendamen
             mAgendamentos.add(agendamento);
         }
 
-        mMyAdapter = new AgendamentoAdapter(AgendamentosActivity.this, mAgendamentos);
+        mMyAdapter = new AgendamentoAdapter(this, mAgendamentos);
         mRecyclerView.setAdapter(mMyAdapter);
         mMyAdapter.notifyDataSetChanged();
     }

@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 
 import com.google.firebase.auth.FirebaseAuth
 
@@ -16,7 +14,9 @@ import java.util.ArrayList
 import br.com.belapp.belapp.activities.CadastroBasicoActivity
 import br.com.belapp.belapp.activities.LoginActivity
 
-import android.support.v4.content.ContextCompat.startActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 
 fun validaPermissoes(requestCode: Int, activity: Activity, permissoes: Array<String>): Boolean {
     if (Build.VERSION.SDK_INT >= 23) {

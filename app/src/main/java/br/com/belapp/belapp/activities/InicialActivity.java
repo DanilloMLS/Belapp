@@ -16,19 +16,18 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -69,6 +68,15 @@ public class InicialActivity extends AppCompatActivity implements NavigationView
 
     ImageButton btnBarba, btnCabelo, btnDepilacao, btnOlho, btnSobrancelha, btnUnha;
 
+    private void openCategoriaIntent(@NonNull Intent intent, @NonNull String categoria) {
+        intent.putExtra("mCategoria", categoria);
+        intent.putExtra("mLatitude", localizacao.getLatitude());
+        intent.putExtra("mLongitude", localizacao.getLongitude());
+        intent.putExtra("mIds", ids);
+        intent.putExtra("mIdcateg", idcateg);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,13 +107,6 @@ public class InicialActivity extends AppCompatActivity implements NavigationView
         btnSobrancelha = findViewById(R.id.ibSobrancelha);
         btnUnha = findViewById(R.id.ibUnha);
 
-
-    //        EstabelecimentoDAO estabelecimentoDAO = new EstabelecimentoDAO();
-    //        estabelecimentoDAO.inserirEstabelecimento();*/
-        /*ProfissionalDAO profDAO = new ProfissionalDAO();
-        profDAO.inserirProfissional();*/
-
-
         ids = new ArrayList<>();
         idcateg = new ArrayList<>();
 
@@ -115,95 +116,46 @@ public class InicialActivity extends AppCompatActivity implements NavigationView
         //verifica se esta logado
         isLogado();
 
-        btnBarba.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPermissoesConcedidas) {
-                    Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
-                    intent.putExtra("mCategoria", "Barba");
-                    intent.putExtra("mLatitude", localizacao.getLatitude());
-                    intent.putExtra("mLongitude", localizacao.getLongitude());
-                    intent.putExtra("mIds", ids);
-                    intent.putExtra("mIdcateg", idcateg);
-                    startActivity(intent);
-                    Toast.makeText(InicialActivity.this, "Barba", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        btnCabelo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if(mPermissoesConcedidas) {
-                    Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
-                    intent.putExtra("mCategoria", "Cabelo");
-                    intent.putExtra("mLatitude", localizacao.getLatitude());
-                    intent.putExtra("mLongitude", localizacao.getLongitude());
-                    intent.putExtra("mIds", ids);
-                    intent.putExtra("mIdcateg", idcateg);
-                    startActivity(intent);
-                    Toast.makeText(InicialActivity.this, "Cabelo", Toast.LENGTH_SHORT).show();
-                }
+        btnBarba.setOnClickListener(v -> {
+            if(mPermissoesConcedidas) {
+                Intent intent = new Intent(this, SaloesActivity.class);
+                this.openCategoriaIntent(intent, "Barba");
             }
         });
-        btnDepilacao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPermissoesConcedidas) {
-                    Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
-                    intent.putExtra("mCategoria", "Depilação");
-                    intent.putExtra("mLatitude", localizacao.getLatitude());
-                    intent.putExtra("mLongitude", localizacao.getLongitude());
-                    intent.putExtra("mIds", ids);
-                    intent.putExtra("mIdcateg", idcateg);
-                    startActivity(intent);
-                    Toast.makeText(InicialActivity.this, "Depilação", Toast.LENGTH_SHORT).show();
-                }
+
+        btnCabelo.setOnClickListener(v -> {
+            if(mPermissoesConcedidas) {
+                Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
+                this.openCategoriaIntent(intent, "Cabelo");
             }
         });
-        btnOlho.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPermissoesConcedidas) {
-                    Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
-                    intent.putExtra("mCategoria", "Olho");
-                    intent.putExtra("mLatitude", localizacao.getLatitude());
-                    intent.putExtra("mLongitude", localizacao.getLongitude());
-                    intent.putExtra("mIds", ids);
-                    intent.putExtra("mIdcateg", idcateg);
-                    startActivity(intent);
-                    Toast.makeText(InicialActivity.this, "Olho", Toast.LENGTH_SHORT).show();
-                }
+
+        btnDepilacao.setOnClickListener(v -> {
+            if(mPermissoesConcedidas) {
+                Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
+                this.openCategoriaIntent(intent, "Depilação");
             }
         });
-        btnSobrancelha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPermissoesConcedidas) {
-                    Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
-                    intent.putExtra("mCategoria", "Sobrancelha");
-                    intent.putExtra("mLatitude", localizacao.getLatitude());
-                    intent.putExtra("mLongitude", localizacao.getLongitude());
-                    intent.putExtra("mIds", ids);
-                    intent.putExtra("mIdcateg", idcateg);
-                    startActivity(intent);
-                    Toast.makeText(InicialActivity.this, "Sobrancelha", Toast.LENGTH_SHORT).show();
-                }
+
+        btnOlho.setOnClickListener(v -> {
+            if(mPermissoesConcedidas) {
+                Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
+                this.openCategoriaIntent(intent, "Olho");
             }
         });
-        btnUnha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPermissoesConcedidas) {
-                    Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
-                    intent.putExtra("mCategoria", "Unha");
-                    intent.putExtra("mLatitude", localizacao.getLatitude());
-                    intent.putExtra("mLongitude", localizacao.getLongitude());
-                    intent.putExtra("mIds", ids);
-                    intent.putExtra("mIdcateg", idcateg);
-                    startActivity(intent);
-                    Toast.makeText(InicialActivity.this, "Unha", Toast.LENGTH_SHORT).show();
-                }
+
+        btnSobrancelha.setOnClickListener(v -> {
+            if(mPermissoesConcedidas) {
+                Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
+                this.openCategoriaIntent(intent, "Sobrancelha");
+            }
+        });
+
+        btnUnha.setOnClickListener(v -> {
+            if(mPermissoesConcedidas) {
+                Intent intent = new Intent(InicialActivity.this, SaloesActivity.class);
+                this.openCategoriaIntent(intent, "Unha");
             }
         });
     }
@@ -219,17 +171,13 @@ public class InicialActivity extends AppCompatActivity implements NavigationView
 
             localizacao = new MyServiceLocation(InicialActivity.this);
 
-            if (localizacao.canGetLocation()) {
-                double longitude = localizacao.getLongitude();
-                double latitude = localizacao.getLatitude();
-                //Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
-            } else {
+            if (!localizacao.canGetLocation()) {
                 localizacao.showSettingsAlert();
             }
         }
     }
 
-    private void buscar(){
+    private void buscar() {
         Query query = FirebaseDatabase.getInstance().getReference("servicos");
 
         query.addChildEventListener(new ChildEventListener() {
@@ -329,27 +277,20 @@ public class InicialActivity extends AppCompatActivity implements NavigationView
             startActivity(intentAbrirTelaCadastro);
 
         } else if (id == R.id.nav_logar) {
-
-
             Intent intetAbrirTelaLogin = new Intent(InicialActivity.this, LoginActivity.class);
             startActivity(intetAbrirTelaLogin);
-
-
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     public void abrirTelaPrincipal() {
-
         Intent intentAbritPrincipal = new Intent(InicialActivity.this , ClienteLogadoActivity.class);
         startActivity(intentAbritPrincipal);
         InicialActivity.this.finish();
     }
-
-
 
     /*----------Listener class to get coordinates ------------- */
     private class MyLocationListener implements LocationListener {
@@ -439,5 +380,4 @@ public class InicialActivity extends AppCompatActivity implements NavigationView
         AlertDialog dialog =  builder.create();
         dialog.show();
     }
-
 }
